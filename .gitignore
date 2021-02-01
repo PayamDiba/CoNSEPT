@@ -1,5 +1,5 @@
 .DS_Store
 dist/
 build/
-FASTRAL.egg-info/
+CoNSEPT.egg-info/
 __pycache__/
