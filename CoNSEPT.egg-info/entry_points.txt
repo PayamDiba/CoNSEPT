@@ -1,0 +1,3 @@
+[console_scripts]
+consept = CoNSEPT.train:main
+

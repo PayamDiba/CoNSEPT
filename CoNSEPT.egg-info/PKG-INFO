@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: CoNSEPT
+Version: 0.2.0
+Summary: A Convolutional Neural Network-based Sequence-to-Expression Prediction Tool
+Home-page: https://github.com/PayamDiba/CoNSEPT
+Author: Payam Dibaeinia
+Author-email: dibaein2@illinois.edu
+License: MIT License
+Description: # CoNSEPT
+        
+Platform: UNKNOWN
+Requires-Python: >3.5.2
+Description-Content-Type: text/markdown
