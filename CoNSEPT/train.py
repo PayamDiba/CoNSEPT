@@ -2,10 +2,10 @@
 @author: Payam Dibaeinia
 """
 
-from Seq_Scan import Seq
-from S2E import seq2expr
-from utils import early_stop, save_pickle, save_expr
-from utils import make_dir
+from CoNSEPT.Seq_Scan import Seq
+from CoNSEPT.S2E import seq2expr
+from CoNSEPT.utils import early_stop, save_pickle, save_expr
+from CoNSEPT.utils import make_dir
 import numpy as np
 import tensorflow as tf
 import argparse

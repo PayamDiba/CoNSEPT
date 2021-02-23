@@ -4,9 +4,9 @@
 
 import numpy as np
 import pandas as pd
-from Scanners import LLR_scanner
+from CoNSEPT.Scanners import LLR_scanner
 import tensorflow as tf
-from DataBuilder import TFRecordData, InlineData
+from CoNSEPT.DataBuilder import TFRecordData, InlineData
 
 class Seq(object):
     def __init__(self,

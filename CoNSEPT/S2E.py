@@ -4,7 +4,7 @@
 
 import numpy as np
 import pandas as pd
-from CNN import CNN_fc
+from CoNSEPT.CNN import CNN_fc
 import tensorflow as tf
 import pickle
 

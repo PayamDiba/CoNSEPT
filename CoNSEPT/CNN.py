@@ -43,6 +43,7 @@ class CNN_fc(Model):
         self.maxPool_bind = layers.MaxPool2D(pool_size = poolSize_bind, strides = poolSize_bind)
         self.maxPool_coop = layers.AveragePooling2D(pool_size = (2,1), strides = (2,1))
         self.coop_inds = coop_inds
+        self.noPriorChan = noPriorChan
         nCoop = len(coop_inds)
 
         # after stacking, expand the last dim
@@ -57,7 +58,8 @@ class CNN_fc(Model):
                            for _ in range(nCoop)]
         # output from each layer above has size : #batch * L * 1 * 1
         # Concat them to get #batch * L * 1 * #priorCoop
-        self.convs_coop_noPrior = layers.Conv2D(filters = noPriorChan, kernel_size = (convSize_coop[0],nTF), strides = (stride_coop[0],nTF), use_bias = True, kernel_initializer='glorot_normal', kernel_regularizer = tf.keras.regularizers.L2(cl2))
+        if noPriorChan > 0:
+            self.convs_coop_noPrior = layers.Conv2D(filters = noPriorChan, kernel_size = (convSize_coop[0],nTF), strides = (stride_coop[0],nTF), use_bias = True, kernel_initializer='glorot_normal', kernel_regularizer = tf.keras.regularizers.L2(cl2))
         # output from layer above has size : #batch * L * 1 * noPriorChan
         # Concat it with previous ones to get #batch * L * 1 * (#priorCoop+#noPriorChan)
         self.coopAct = layers.Activation(coopAct)
@@ -115,8 +117,9 @@ class CNN_fc(Model):
             coop_list.append(k(c_ij))
 
         seq_coop_noPrior = tf.expand_dims(seq,-1)
-        coop_noPrior = self.convs_coop_noPrior(seq_coop_noPrior)
-        coop_list.append(coop_noPrior)
+        if self.noPriorChan > 0:
+            coop_noPrior = self.convs_coop_noPrior(seq_coop_noPrior)
+            coop_list.append(coop_noPrior)
 
 
         coop = tf.concat(coop_list, axis = -1)
