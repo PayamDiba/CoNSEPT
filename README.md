@@ -39,13 +39,13 @@ FACTOR_3  LEVEL LEVEL ... LEVEL
 
 4. TF-TF Interactions (tab delimited values):
 
-  + This file specifies any prior knowledge of TF-TF interactions forcing the model to capture them:
+  This file specifies any prior knowledge of TF-TF interactions forcing the model to capture them:
 
-```
-FACTOR_1  FACTOR_1
-FACTOR_1  FACTOR_2
-FACTOR_2  FACTOR_3
-```
+      ```
+      FACTOR_1  FACTOR_1
+      FACTOR_1  FACTOR_2
+      FACTOR_2  FACTOR_3
+      ```
 
 5. Position Count/Weight Matrices (tab delimited values):
 
