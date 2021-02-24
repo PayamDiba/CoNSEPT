@@ -13,12 +13,12 @@ To train CoNSEPT, five input files are required (See ```Example``` directory for
 
 1. Enhancer Sequence (FASTA format):
 
-  ```
-  >ENHANCER_1
-  AACCCA...TTACAAT
-  >ENHANCER_2
-  CGGACT...TAACATG
-  ```
+```
+>ENHANCER_1
+AACCCA...TTACAAT
+>ENHANCER_2
+CGGACT...TAACATG
+```
 
 2. Gene Expression (tab delimited values):
 
@@ -39,7 +39,7 @@ FACTOR_3  LEVEL LEVEL ... LEVEL
 
 4. TF-TF Interactions (tab delimited values):
 
-This file specifies any prior knowledge of TF-TF interactions forcing the model to capture them:
+  + This file specifies any prior knowledge of TF-TF interactions forcing the model to capture them:
 
 ```
 FACTOR_1  FACTOR_1
