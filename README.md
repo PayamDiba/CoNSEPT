@@ -28,21 +28,28 @@ ENHANCER_2 EXPR EXPR  EXPR
 
 3. Transcription Factor Levels (tab delimited values):
 
+```
 Rows  TRANS_1 TRANS_2 ... TRANS_N
 FACTOR_1  LEVEL LEVEL ... LEVEL
 FACTOR_2  LEVEL LEVEL ... LEVEL
 FACTOR_3  LEVEL LEVEL ... LEVEL
+```
 
 4. TF-TF Interactions (tab delimited values):
+
 This file specifies any prior knowledge of TF-TF interactions forcing the model to capture them:
 
+```
 FACTOR_1  FACTOR_1
 FACTOR_1  FACTOR_2
 FACTOR_2  FACTOR_3
+```
 
 5. Position Count/Weight Matrices (tab delimited values):
+
 Count matrices are recommended. All motifs are required to have the same length. Shorter motifs should be padded with equal count/weight over four nucleotides.
 
+```
 >FACTOR_1 LENGTH
 A_COUNT C_COUNT G_COUNT T_COUNT
 A_COUNT C_COUNT G_COUNT T_COUNT
@@ -61,5 +68,6 @@ A_COUNT C_COUNT G_COUNT T_COUNT
 ...
 A_COUNT C_COUNT G_COUNT T_COUNT
 <
+```
 
-### NOTE: Enhancer sequence and gene expression files should have the same ordering of enhancers.
+#### NOTE: Enhancer sequence and gene expression files should have the same ordering of enhancers.
