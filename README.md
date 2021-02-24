@@ -82,39 +82,38 @@ Get a quick help on the required flags for running CoNSEPT:
 
 Here is the list of arguments for running in training/prediction modes:
 
-* --sf: path to sequence file containing all train, validation, and test sequences
-* --ef: path to gene expression file
-* --tf: path to TFs' level file
-* --cf: path to TF-TF interactions file
-* --pwm: path to PWM/PCM file
-* --pcount: pseudo count for modifying PWMs | Default: 0.0
-* --nb: number of trans conditions present in gene (and TF) expression files
-* --nTrain: the first nTrain sequences (in all trans conditions) are used for training
-* --nValid: the next nValid sequences (in all trans conditions) are used for validation
-* --nTest: the last nTest sequences (in all trans conditions) are used for testing
-* --psb: pool size for extract binding sites, specify as x,2 (e.g. 5,2 or 10,2)
-* --csc: size of kernels capturing prior TF interaction, specify as x,2 (e.g. 5,2 or 10,2)
-* --sc: stride of kernels capturing prior TF interaction, specify as x,2 (e.g. 5,2 or 10,2)
-* --nChan_noPrior: number of channels in the convolutional layer capturing general TF interactions
-* --nChans: number of channels in the additional layers capturing longer-range interactions, specify one number per layer as x,y,z (e.g. 64,64,16,4 corresponds to four additional convolutional layers)
-* --cAct: network activation function, is used for all layers before the output (e.g. relu)
-* --oAct: output layer activation function | Default: No activation
-* --dr: network dropout rate | Default: 0
-* --cl2: weight of L2 regularization for short-range kernels | Default: 0.01
-* --fcl2: weight of L2 regularization for long-range kernels | Default: 0.01
-* --bs: batch size (Note: a training data of n1 enhancers and n2 trans conditions has a total size of n1*n2)| Default: 32
-* --nEpoch: number of training epochs | Default: 100
-* --lr: initial learning rate of ADAM optimizer | Default: 0.00001
-* --step_LR: a threshold for train and validation error to control their fluctuations by tuning learning rate. A larger threshhold results in more fluctuations | Default: no threshold
-* --save_freq: saving frequency (in epochs) | Default: 4
-* --o: path to the output directory
-* --ds: data source, options: build_records, read_records, or inline (inline is recommended)
-* --record_path: [only needed for build_records and read_records data sources] path for reading/writing records.
-* --restore: if specified, training is resumed from the last saved epoch
-
-* --predict: if specified, the model only makes predictions with no training
-* --ckpt: [if --predict is specified] the saved checkpoint to be used for prediction
-* --pred_dir: [if --predict is specified] folder name inside the output directory to write predictions
+* --sf: path to sequence file containing all train, validation, and test sequences  
+* --ef: path to gene expression file  
+* --tf: path to TFs' level file  
+* --cf: path to TF-TF interactions file  
+* --pwm: path to PWM/PCM file  
+* --pcount: pseudo count for modifying PWMs | Default: 0.0  
+* --nb: number of trans conditions present in gene (and TF) expression files  
+* --nTrain: the first nTrain sequences (in all trans conditions) are used for training  
+* --nValid: the next nValid sequences (in all trans conditions) are used for validation  
+* --nTest: the last nTest sequences (in all trans conditions) are used for testing  
+* --psb: pool size for extract binding sites, specify as x,2 (e.g. 5,2 or 10,2)  
+* --csc: size of kernels capturing prior TF interaction, specify as x,2 (e.g. 5,2 or 10,2)  
+* --sc: stride of kernels capturing prior TF interaction, specify as x,2 (e.g. 5,2 or 10,2)  
+* --nChan_noPrior: number of channels in the convolutional layer capturing general TF interactions  
+* --nChans: number of channels in the additional layers capturing longer-range interactions, specify one number per layer as x,y,z (e.g. 64,64,16,4 corresponds to four additional convolutional layers)  
+* --cAct: network activation function, is used for all layers before the output (e.g. relu)  
+* --oAct: output layer activation function | Default: No activation  
+* --dr: network dropout rate | Default: 0  
+* --cl2: weight of L2 regularization for short-range kernels | Default: 0.01  
+* --fcl2: weight of L2 regularization for long-range kernels | Default: 0.01  
+* --bs: batch size (Note: a training data of n1 enhancers and n2 trans conditions has a total size of n1*n2)| Default: 32  
+* --nEpoch: number of training epochs | Default: 100  
+* --lr: initial learning rate of ADAM optimizer | Default: 0.00001  
+* --step_LR: a threshold for train and validation error to control their fluctuations by tuning learning rate. A larger threshhold results in more fluctuations | Default: no threshold  
+* --save_freq: saving frequency (in epochs) | Default: 4  
+* --o: path to the output directory  
+* --ds: data source, options: build_records, read_records, or inline (inline is recommended)  
+* --record_path: [only needed for build_records and read_records data sources] path for reading/writing records.  
+* --restore: if specified, training is resumed from the last saved epoch  
+* --predict: if specified, the model only makes predictions with no training  
+* --ckpt: [if --predict is specified] the saved checkpoint to be used for prediction  
+* --pred_dir: [if --predict is specified] folder name inside the output directory to write predictions  
 
 
 ## Example
