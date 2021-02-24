@@ -13,18 +13,20 @@ To train CoNSEPT, five input files are required (See ```Example``` directory for
 
 1. Enhancer Sequence (FASTA format):
 
-```
->ENHANCER_1
-AACCCA...TTACAAT
->ENHANCER_2
-CGGACT...TAACATG
-```
+  ```
+  >ENHANCER_1
+  AACCCA...TTACAAT
+  >ENHANCER_2
+  CGGACT...TAACATG
+  ```
 
 2. Gene Expression (tab delimited values):
 
+```
 Rows  TRANS_1 TRANS_2 ... TRANS_N
 ENHANCER_1  EXPR  EXPR  EXPR
 ENHANCER_2 EXPR EXPR  EXPR
+```
 
 3. Transcription Factor Levels (tab delimited values):
 
