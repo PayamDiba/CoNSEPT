@@ -1,4 +1,4 @@
-# CoNSEPT (Convolutional Neural Network-based Sequence-to-Expression Prediction Tool)
+## CoNSEPT (Convolutional Neural Network-based Sequence-to-Expression Prediction Tool)
 Saurabh Sinha’s Lab, University of Illinois at Urbana-Champaign [Sinha Lab](https://www.sinhalab.net/sinha-s-home)
 
 ## Description
