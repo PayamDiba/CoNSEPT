@@ -4,6 +4,9 @@ Saurabh Sinha’s Lab, University of Illinois at Urbana-Champaign [Sinha Lab](ht
 ## Description
 CoNSEPT is a tool to predict gene expression in various cis and trans contexts. Inputs to CoNSEPT are enhancer sequence, transcription factor levels in one or many trans conditions, TF motifs (PWMs), and any prior knowledge of TF-TF interactions.
 
+## Note
+Please see [here](https://github.com/PayamDiba/Manuscript_tools/tree/main/CoNSEPT_rho) for the version we used in modeling the regulation of rhomboid gene in Drosophila.
+
 ## Getting Started
 CoNSEPT can be installed from PyPI:
 
