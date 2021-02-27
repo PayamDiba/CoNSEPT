@@ -117,6 +117,6 @@ Here is the list of arguments for running in training/prediction modes:
 
 
 ## Example
-We provided an example dataset in ```example``` directory (data obtained from [here](https://elifesciences.org/articles/08445)). The data consists of expressions driven by 52 enhancers in 17 trans conditions regulting by three TFs. Here is an example command-line for training a CoNSEPT model on this data (38 enhancers are used for training, 3 for validation and the last 11 enhancers for testing):
+We provided an example dataset in ```example``` directory (data obtained from [here](https://elifesciences.org/articles/08445)). The data consists of expressions driven by 52 enhancers in 17 trans conditions regulated by three TFs. Here is an example command-line for training a CoNSEPT model on this data (38 enhancers are used for training, 3 for validation and the last 11 enhancers for testing):
 
 ```consept --sf {PATH-TO}/example/seq.fa --ef {PATH-TO}/example/expr.tab --tf {PATH-TO}/example/factor_expr.tab --cf {PATH-TO}/example/coop.tab --pwm {PATH-TO}/example/PWMs.txt --nb 17 --nTrain 38 --nValid 3 --nTest 11 --psb 4,2 --csc 4,2 --sc 4,2 --nChan_noPrior 0 --nChans 36,6 --cAct relu --oAct sigmoid --dr 0.5 --o {PATH-TO}/outputs```
