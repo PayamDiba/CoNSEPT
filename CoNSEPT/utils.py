@@ -34,3 +34,49 @@ def make_dir(path):
 
     if not tf.io.gfile.exists(path):
         tf.io.gfile.makedirs(path)
+
+def _get_TF_revComp(TF):
+    ret = np.flip(TF, axis = 0)
+    ret = np.flip(ret, axis = 1)
+
+    return ret
+
+
+def _build_TF_dict(PWM, pseudo_count):
+    ret = {}
+    df = pd.read_csv(PWM, header=None, index_col=None, sep='\t', names = ['0','1','2','3'])
+    df = df.values
+    sharedLen = None
+
+    for l in df:
+        if l[0][0] == '>':
+            tfName = str(l[0][1:])
+            lenTF = int(l[1])
+            if not sharedLen:
+                sharedLen = lenTF
+            elif sharedLen != lenTF:
+                raise ValueError("TFs must have identical lengths")
+            ret[tfName,'+'] = np.zeros((lenTF,4,1,1))
+            ret[tfName,'-'] = np.zeros((lenTF,4,1,1))
+            baseInd = 0
+        elif l[0][0] != '<':
+            currBase = [float(b)+float(pseudo_count) for b in l]
+            currBase = np.true_divide(currBase, np.sum(currBase))
+            ret[tfName,'+'][baseInd,:,0,0] = currBase
+            baseInd += 1
+        elif l[0][0] == '<':
+            ret[tfName,'-'] = _get_TF_revComp(ret[tfName,'+'])
+
+    return ret
+
+def get_motifs(PWM, pseudo_count, tfExp_file):
+    tfNames = pd.read_csv(tfExp_file, header=0, index_col=0, sep='\t')
+    tfNames = tfNames.index.astype('str')
+    tfDict =  _build_TF_dict(PWM, pseudo_count)
+    ret = []
+    for strand in ['+','-']:
+        for currTF in tfNames:
+            ret.append(tfDict[currTF,strand])
+
+    ret = np.concatenate(ret, axis = -1)
+    return tf.convert_to_tensor(ret, dtype=tf.float32)

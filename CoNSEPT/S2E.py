@@ -9,8 +9,9 @@ import tensorflow as tf
 import pickle
 
 
+
 class seq2expr (object):
-    def __init__(self, flags):
+    def __init__(self, flags, motifs):
 
         if flags.nChans != '0':
             nChans = [int(i) for i in flags.nChans.split(',')]
@@ -30,7 +31,7 @@ class seq2expr (object):
         self.model = CNN_fc(dropout_rate = flags.dr, poolSize_bind = psb,
         convSize_coop = csc, stride_coop = sc, coopAct = flags.cAct, coop_inds = coop_inds,
         fcConvChan_coop = nChans, outAct = flags.oAct, cl2 = flags.cl2, fcl2 = flags.fcl2, noPriorChan = flags.nChan_noPrior,
-        nTF = len(TF_order))
+        nTF = len(TF_order), motifs = motifs)
 
         self.loss = tf.keras.losses.MeanSquaredError()
         self.optimizer = tf.keras.optimizers.Adam(learning_rate = flags.lr)

@@ -29,16 +29,24 @@ class CNN_fc(Model):
                  cl2,
                  fcl2,
                  noPriorChan,
-                 nTF):
+                 nTF,
+                 motifs = None):
         """
         coopAct: string
         outAct: string
         fcConvChan_coop: a list containing the number of filters (channels) for each convolutional layer after the very first coop layer
         nCoop: Number of cooperative interactions
+        motifs: tensor(l,4,1,2t) where t is number of TFs. Shows PWMs (elements are probabilities).
         """
         super(CNN_fc, self).__init__()
-        #TODO: Is it possible to use tf.Sequential here?
-        #self.bn_bind = layers.BatchNormalization()
+
+        if motifs is not None:
+            assert tf.is_tensor(motifs)
+            self.log_motifs_ = self._getLogMotifs(motifs)
+            self.maxTF_ = self._getMaxTF_logP()
+        else:
+            raise ValueError('Not implemented yet. CoNSEPT needs PWMs.')
+
         self.bn_bind = layers.LayerNormalization()
         self.maxPool_bind = layers.MaxPool2D(pool_size = poolSize_bind, strides = poolSize_bind)
         self.maxPool_coop = layers.AveragePooling2D(pool_size = (2,1), strides = (2,1))
@@ -91,7 +99,32 @@ class CNN_fc(Model):
         else:
             self.outAct = None
 
+    def _scan(self, seq):
+        ret = tf.nn.conv2d(input = seq, filters = self.log_motifs_, strides = (1,4), padding = 'VALID')
+        ret = tf.exp(ret)
+        maxTF = tf.exp(self.maxTF_)
+        ret = tf.math.divide(ret,maxTF)[:,:,0,:] #tensor(N,S,2t)
+        N = ret.shape[0]
+        S = ret.shape[1]
+        ret = tf.reshape(ret,(N,S,2,-1))
+        return ret
 
+    def _getLogMotifs(self, motifs):
+        # replace zeros with 1e-6
+        ret = tf.where(tf.equal(motifs, 0), 1e-6*tf.ones_like(motifs), motifs)
+        ret = tf.math.log(ret)
+
+        return ret
+
+
+    def _getMaxTF_logP(self):
+        n = self.log_motifs_.shape[-1]
+        ret = self.log_motifs_[:,:,:,:n//2]
+        ret = tf.math.reduce_max(ret, axis = 1)[:,0,:]
+        ret = tf.math.reduce_sum(ret, axis = 0).numpy().tolist()
+        ret = tf.convert_to_tensor(np.array(2 * ret), dtype=tf.float32)
+
+        return ret
 
     def call(self, inputs, training = True):
         """
@@ -99,6 +132,7 @@ class CNN_fc(Model):
         # TODO: allow coops = None (default)
         """
         seq, conc = inputs
+        seq = self._scan(seq)
         nTF = conc.shape[1]
 
         seq = self.bn_bind(seq, training = training)

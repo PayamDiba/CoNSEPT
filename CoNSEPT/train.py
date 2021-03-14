@@ -2,10 +2,10 @@
 @author: Payam Dibaeinia
 """
 
-from CoNSEPT.Seq_Scan import Seq
+from CoNSEPT.Dataset import dataset
 from CoNSEPT.S2E import seq2expr
 from CoNSEPT.utils import early_stop, save_pickle, save_expr
-from CoNSEPT.utils import make_dir
+from CoNSEPT.utils import make_dir, get_motifs
 import numpy as np
 import tensorflow as tf
 import argparse
@@ -48,8 +48,6 @@ def main():
     parser.add_argument('--step_LR', type=float, default=None, help='a threshold for train and validation error to control their fluctuations by tuning learning rate. A larger threshhold results in more fluctuations | Default: no threshold', required = False)
     parser.add_argument('--save_freq', type=int, default=4, help='saving frequency | Default: 4', required = False)
     parser.add_argument('--o', type=str, default=None, help='path to output directory', required = True)
-    parser.add_argument('--ds', type=str, default='inline', help='data source, options: build_records, read_records, or inline', required = False)
-    parser.add_argument('--record_path', type=str, default=None, help='path for reading/writing records. Only needed for build_records and read_records data sources', required = False)
     parser.add_argument('--restore', action='store_true', help='if specified, training is resumed from the last saved epoch', required = False)
 
     parser.add_argument('--predict', action='store_true', help='if specified, the model only makes predictions without training', required = False)
@@ -77,35 +75,37 @@ def main():
         make_dir(FLAGS.o + FLAGS.pred_dir)
 
     """
+    Get provided TF motifs
+    """
+    motifs = get_motifs(PWM = FLAGS.pwm, pseudo_count = FLAGS.pcount, tfExp_file = FLAGS.tf)
+
+    """
     Define model
     """
-    model = seq2expr(FLAGS)
+    model = seq2expr(FLAGS, motifs)
 
     """
     If only require predictions
     """
     if FLAGS.predict:
         model.restore(epoch = FLAGS.ckpt)
-        data = Seq(seq_file = FLAGS.sf,
-                   PWM = FLAGS.pwm,
-                   pseudo_count = FLAGS.pcount,
-                   expression_file = FLAGS.ef,
-                   TF_file = FLAGS.tf,
-                   nBins = FLAGS.nb,
-                   nTrain = 0,
-                   nValid = 0,
-                   nTest = FLAGS.nTest,
-                   record_path = FLAGS.record_path,
-                   source = FLAGS.ds,
-                   LLR = False,
-                   training = False)
+        data = dataset(seq_file = FLAGS.sf,
+                       expression_file = FLAGS.ef,
+                       TF_file = FLAGS.tf,
+                       nBins = FLAGS.nb,
+                       nTrain = 0,
+                       nValid = 0,
+                       nTest = FLAGS.nTest,
+                       out_path = FLAGS.o,
+                       LLR = False,
+                       training = False)
 
         pred_expr = np.array([])
         tmp = 0
         for batch in data.batch(type = 'test', nBatch = FLAGS.bs, shuffle = False):
             print(tmp)
             tmp+=1
-            currSeq, currTF, _ = (batch['score'], batch['tfE'], batch['gE'])
+            currSeq, currTF, _ = (batch['seq'], batch['tfE'], batch['gE'])
             currPred = model.predict(seq = currSeq, conc = currTF)
             if pred_expr.shape[0] != 0:
                 pred_expr = np.concatenate((pred_expr, currPred), axis = 0)
@@ -119,19 +119,16 @@ def main():
     """
     Prepare data
     """
-    data = Seq(seq_file = FLAGS.sf,
-               PWM = FLAGS.pwm,
-               pseudo_count = FLAGS.pcount,
-               expression_file = FLAGS.ef,
-               TF_file = FLAGS.tf,
-               nBins = FLAGS.nb,
-               nTrain = FLAGS.nTrain,
-               nValid = FLAGS.nValid,
-               nTest = FLAGS.nTest,
-               record_path = FLAGS.record_path,
-               source = FLAGS.ds,
-               LLR = False,
-               training = not FLAGS.predict)
+    data = dataset(seq_file = FLAGS.sf,
+                   expression_file = FLAGS.ef,
+                   TF_file = FLAGS.tf,
+                   nBins = FLAGS.nb,
+                   nTrain = FLAGS.nTrain,
+                   nValid = FLAGS.nValid,
+                   nTest = FLAGS.nTest,
+                   out_path = FLAGS.o,
+                   LLR = False,
+                   training = not FLAGS.predict)
 
     print('data is ready')
 
@@ -160,19 +157,18 @@ def main():
     for epoch in pbar:
         #Train step
         for batch in data.batch(type = 'train', nBatch = FLAGS.bs, shuffle = True):
-            currSeq, currTF, currExp = (batch['score'], batch['tfE'], batch['gE'])
+            currSeq, currTF, currExp = (batch['seq'], batch['tfE'], batch['gE'])
             model.train_step(seq = currSeq, conc = currTF, gt_expr = currExp)
 
         model.collect_loss_train()
 
         #Valid step
         for batch in data.batch(type = 'valid', nBatch = FLAGS.bs, shuffle = False):
-            currSeq, currTF, currExp = (batch['score'], batch['tfE'], batch['gE'])
+            currSeq, currTF, currExp = (batch['seq'], batch['tfE'], batch['gE'])
             model.valid_step(seq = currSeq, conc = currTF, gt_expr = currExp)
 
         model.collect_loss_valid()
-
-        if FLAGS.verbose == 'True':
+        if FLAGS.verbose == True:
             print('Epoch: {}\ttraining loss: {:0.3f}\tvalidation loss:{:0.3f}\tLR:{}'.format(epoch+1,model.loss_train, model.loss_valid, model.optimizer.lr.read_value()))
 
         # Valid step, do it after each epoch cause we might use it for early termination
@@ -182,7 +178,7 @@ def main():
         if (epoch + 1) % FLAGS.save_freq == 0:
             #Test step
             for batch in data.batch(type = 'test', nBatch = FLAGS.bs, shuffle = False):
-                currSeq, currTF, currExp = (batch['score'], batch['tfE'], batch['gE'])
+                currSeq, currTF, currExp = (batch['seq'], batch['tfE'], batch['gE'])
                 model.test_step(seq = currSeq, conc = currTF, gt_expr = currExp)
 
             model.collect_loss_test()
