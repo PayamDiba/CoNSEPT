@@ -111,8 +111,6 @@ Here is the list of arguments for running in training/prediction modes:
 * --step_LR: a threshold for train and validation error to control their fluctuations by tuning learning rate. A larger threshhold results in more fluctuations | Default: no threshold  
 * --save_freq: saving frequency (in epochs) | Default: 4  
 * --o: path to the output directory  
-* --ds: data source, options: build_records, read_records, or inline (inline is recommended)  
-* --record_path: [only needed for build_records and read_records data sources] path for reading/writing records.  
 * --restore: if specified, training is resumed from the last saved epoch  
 * --predict: if specified, the model only makes predictions with no training  
 * --ckpt: [if --predict is specified] the saved checkpoint to be used for prediction  
